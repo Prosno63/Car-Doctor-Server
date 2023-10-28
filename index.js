@@ -32,6 +32,19 @@ async function run() {
 const serviceCollection = client.db('carDoctor').collection('services');
 const OrderCollection = client.db('carDoctor').collection('Orders');
 
+
+app.get('/orders', async(req, res)=>{
+  console.log(req.query.email);
+  let query = {};
+  if(req.query?.email){
+    query = {email: req.query.email}
+  }
+  const result = await OrderCollection.find(query).toArray();
+  res.send(result);
+})
+
+
+
 app.post('/orders', async(req, res)=>{
 
     const order = req.body;
@@ -52,7 +65,7 @@ app.get('/services/:id', async(req, res)=>{
      const query = {_id: new ObjectId(id)}
 
      const options = {
-        projection : {title:1, price: 1 },
+        projection : {title:1, price: 1, img:1 },
      };
      const result = await serviceCollection.findOne(query, options);
      res.send(result);
